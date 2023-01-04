@@ -10,6 +10,24 @@ namespace aspnet_get_started.Controllers
     {
         public ActionResult Index()
         {
+            SecretClientOptions options = new SecretClientOptions()
+                {
+                    Retry =
+                    {
+                        Delay= TimeSpan.FromSeconds(2),
+                        MaxDelay = TimeSpan.FromSeconds(16),
+                        MaxRetries = 5,
+                        Mode = RetryMode.Exponential
+                    }
+                };
+            var client = new SecretClient(new Uri("https://yitest.vault.azure.net/"), new DefaultAzureCredential(),options);
+
+            KeyVaultSecret secret = client.GetSecret("test");
+
+            string secretValue = secret.Value;
+
+            System.Console.WriteLine(secretValue);
+
             return View();
         }
 
